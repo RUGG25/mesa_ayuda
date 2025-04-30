@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Solicitud de Turnos de la DIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Open Sans', sans-serif; font-size: 10pt; }
+    .accordion-content { display: none; }
+    .accordion.open .accordion-content { display: block; }
+  </style>
+</head>
+<body class="bg-gray-50 p-4">
+
+  <!-- Encabezado -->
+  <header class="flex items-center justify-between p-4 border-b border-gray-300">
+    <h1 class="text-xl font-semibold text-gray-800 text-center w-full uppercase">Gestión de Solicitudes DIT</h1>
+    <img src="https://github.com/usuario/logo.png" alt="Logo" class="w-16 h-16 absolute right-4 top-4">
+  </header>
+
+  <!-- Formulario con acordeón -->
+  <section class="mt-6 space-y-4">
+    <div class="accordion bg-white rounded-2xl shadow-md overflow-hidden">
+      <button class="w-full text-left px-6 py-4 bg-gray-100 font-semibold text-gray-700" onclick="toggleAccordion(this)">Formulario de Solicitud</button>
+      <div class="accordion-content px-6 py-4 space-y-4">
+        <form id="turnoForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="number" name="numero_turno" placeholder="Número de Turno (3 dígitos)" maxlength="3" required class="input">
+            <input type="text" name="numero_oficio" placeholder="Número de Oficio" maxlength="20" required class="input">
+            <div>
+              <label for="fecha_recepcion" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Recepción</label>
+              <input type="date" id="fecha_recepcion" name="fecha_recepcion" required class="input">
+            </div>
+            <input type="text" name="nombre_solicitante" placeholder="Nombre del Solicitante" required class="input">
+            <input type="text" name="unidad_administrativa" placeholder="Unidad Administrativa" required class="input">
+            <input type="text" name="solicitud" placeholder="Solicitud" required class="input">
+            <select name="responsable_atencion" required class="input">
+              <option value="">Responsable de Atención</option>
+              <option value="RubénGG">RubénGG</option>
+              <option value="Ivon">Ivon</option>
+              <option value="RubénCM">RubénCM</option>
+              <option value="Raúl">Raúl</option>
+            </select>
+            <div>
+              <label for="fecha_atencion" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Atención</label>
+              <input type="date" id="fecha_atencion" name="fecha_atencion" required class="input">
+            </div>
+            <select name="estatus" required class="input">
+              <option value="">Estatus</option>
+              <option value="abierto">Abierto</option>
+              <option value="cerrado">Cerrado</option>
+              <option value="conocimiento">Conocimiento</option>
+            </select>
+            <input type="text" name="medio_cierre" placeholder="Medio de Cierre" class="input">
+          </div>
+          <input type="text" name="Observaciones" placeholder="Observaciones" class="input">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-2xl shadow-md hover:bg-blue-700">Guardar</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="alerta" class="hidden bg-green-100 text-green-800 p-3 rounded shadow-md">Formulario enviado exitosamente.</div>
+  </section>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzJCfG_li4xRjPRNMdPGJFaC9V60-lVEkw77K9w0ey7RF-xpMU3I3BFh7gazPOzv-sv/exec';
+    document.getElementById('turnoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(this).entries());
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        document.getElementById('alerta').classList.remove('hidden');
+        this.reset();
+        setTimeout(() => document.getElementById('alerta').classList.add('hidden'), 3000);
+      })
+      .catch(error => alert('Error al enviar formulario'));
+    });
+
+    function toggleAccordion(button) {
+      const container = button.parentElement;
+      container.classList.toggle('open');
+    }
+
+    // Estilo para inputs Tailwind
+    document.querySelectorAll('.input').forEach(el => {
+      el.classList.add('w-full', 'p-2', 'border', 'border-gray-300', 'rounded-2xl', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+    });
+  </script>
+
+</body>
+</html>
